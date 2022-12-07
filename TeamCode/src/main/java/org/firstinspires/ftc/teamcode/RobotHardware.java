@@ -180,7 +180,7 @@ public class RobotHardware {
 
 
         mActuatorLeft.setPower(1);
-        // mActuatorRight.setPower(1);
+        mActuatorRight.setPower(1);
     }
 
     public void openClaw() {

@@ -45,10 +45,10 @@ public class Camera extends LinearOpMode
     // UNITS ARE PIXELS
     // NOTE: this calibration is for the C920 webcam at 800x448.
     // You will need to do your own calibration for other configurations!
-    double fx = 578.272;
-    double fy = 578.272;
-    double cx = 402.145;
-    double cy = 221.506;
+    double fx = 1430.0;
+    double fy = 1430.0;
+    double cx = 320.0;
+    double cy = 180.0;
 
     // UNITS ARE METERS
     double tagsize = 0.166;
@@ -64,7 +64,7 @@ public class Camera extends LinearOpMode
     public void runOpMode()
     {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "webcam_1"), cameraMonitorViewId);
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
 
         camera.setPipeline(aprilTagDetectionPipeline);
@@ -167,11 +167,11 @@ public class Camera extends LinearOpMode
         }
 
         /* Actually do something useful */
-        if (tagOfInterest == null || tagOfInterest == Left) {
+        if (tagOfInterest == null || tagOfInterest.id == Left) {
             //left code
-        }else if (tagOfInterest == Right) {
+        }else if (tagOfInterest.id == Right) {
             //right code
-        }else if (tagOfInterest == Middle) {
+        }else if (tagOfInterest.id == Middle) {
             //middle code
         }
 
