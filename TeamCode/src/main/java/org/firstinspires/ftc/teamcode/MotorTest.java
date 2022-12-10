@@ -18,21 +18,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 */
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.hardware.Blinker;
-import com.qualcomm.robotcore.hardware.HardwareDevice;
-import com.qualcomm.robotcore.hardware.Gyroscope;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
 @Autonomous
 
-public class NoCameraAuto extends LinearOpMode {
+public class MotorTest extends LinearOpMode {
 
     RobotHardware robot = new RobotHardware();
 
@@ -42,26 +33,14 @@ public class NoCameraAuto extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
 
         robot.init(hardwareMap);
-
+        telemetry.addData("Encoder", robot.frontR);
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 /*
-        telemetry.addLine(String.format("encoderFR: %.2f ", robot.frontR.getCurrentPosition()));y
-        telemetry.addData("encoderFL: %.2f ", robot.frontL.getCurrentPosition());
-        telemetry.addData("encoderBR: %.2f ", robot.backR.getCurrentPosition());
-        telemetry.addData("encoderBL: %.2f ", robot.backL.getCurrentPosition());
-        robot.closeClaw();
-        sleep(1000);
 
  */
-        robot.MoveVerticle(33*26,0.5);
-        while (opModeIsActive() && robot.frontL.isBusy() && robot.frontR.isBusy() ) {sleep(10);}
-        robot.MoveHoritzontal(60*25, 0.5);
+        robot.frontBackAuto(6, 0.3);
         sleep(10000);
-        //sleep(1000);
-        //robot.frontBackAuto(-4500, 1);
-        //while (opModeIsActive() && robot.frontL.isBusy() && robot.frontR.isBusy() ) {sleep(10);}
-        //sleep(10000);
 
 
         // run until the end of the match (driver presses STOP)

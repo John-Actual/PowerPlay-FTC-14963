@@ -42,13 +42,14 @@ public class DriverControlled extends LinearOpMode {
         telemetry.update();
         robot.mActuatorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.mActuatorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.frontR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         double powerLvl = 1;
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            telemetry.addData("Encoder Value:", robot.mActuatorLeft.getCurrentPosition());
+            telemetry.addData("Encoder Value:", robot.frontR.getCurrentPosition());
             telemetry.update();
 
             //Forward, back, left, right, and diagonal Movement

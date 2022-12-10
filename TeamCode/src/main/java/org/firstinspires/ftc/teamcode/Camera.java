@@ -34,7 +34,7 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
 import java.util.ArrayList;
 
 @TeleOp
-public class Camera extends LinearOpMode
+public class  Camera extends LinearOpMode
 {
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
@@ -58,11 +58,15 @@ public class Camera extends LinearOpMode
     int Middle = 14;
     int Right = 15;
 
+    RobotHardware robot = new RobotHardware();
+
     AprilTagDetection tagOfInterest = null;
 
+    //RobotHardware robot = new RobotHardware();
+
     @Override
-    public void runOpMode()
-    {
+    public void runOpMode() throws InterruptedException {
+        //robot.init(hardwareMap);
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
@@ -171,6 +175,7 @@ public class Camera extends LinearOpMode
             //left code
         }else if (tagOfInterest.id == Right) {
             //right code
+            robot.MoveHoritzontal(60*25, 0.5);
         }else if (tagOfInterest.id == Middle) {
             //middle code
         }

@@ -19,6 +19,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 
 package org.firstinspires.ftc.teamcode;
 
+import static java.lang.Thread.sleep;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.ServoController;
@@ -85,6 +87,15 @@ public class RobotHardware {
         servoR.setPosition(0);
 
     }
+    //Math
+    public int math(int numOfInches) {
+        final int ticks_per_rotation = 550;
+        final double inches_per_rotation = 3.54331 * Math.PI;
+        double ticks_per_inch = ticks_per_rotation / inches_per_rotation;
+
+        return numOfInches * (int) ticks_per_inch;
+
+    }
 
     /*
     Start of Controller Movement Section
@@ -100,8 +111,8 @@ public class RobotHardware {
 
         frontL.setPower(value);
         backL.setPower(value);
-        frontR.setPower(value);
-        backR.setPower(value);
+        frontR.setPower(- value);
+        backR.setPower(- value);
     }
 
     //moves robot diagonally with Controller
@@ -146,8 +157,8 @@ public class RobotHardware {
 
         frontL.setPower(value);
         backL.setPower(value);
-        frontR.setPower(- value);
-        backR.setPower(- value);
+        frontR.setPower(value);
+        backR.setPower(value);
     }
 
     public void actuatorControlled(double value) {
@@ -201,41 +212,83 @@ public class RobotHardware {
 
 
     //moves forward and back autonomously
-    public void frontBackAuto(int target, double powerLvl) {
-        frontL.setTargetPosition(target);
-        frontR.setTargetPosition(target);
-        backL.setTargetPosition(target);
-        backR.setTargetPosition(target);
+    public void frontBackAuto(int inches, double powerLvl) {
+        frontR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        frontR.setTargetPosition(- math(inches));
+        frontL.setTargetPosition(math(inches));
+        backL.setTargetPosition(math(inches));
+        backR.setTargetPosition(- math(inches));
         //sets motors to run using encoder
-        frontL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         frontR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        frontL.setPower(powerLvl);
         frontR.setPower(powerLvl);
+        frontL.setPower(powerLvl);
         backL.setPower(powerLvl);
         backR.setPower(powerLvl);
     }
 
+
+
     //moves left and right autonomously
-    public void leftRightAuto(int target, double powerLvl) {
+    public void leftRightAuto(int inches, double powerLvl) {
+        frontR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //sets target position
-        frontL.setTargetPosition(target);
-        frontR.setTargetPosition(target);
-        backL.setTargetPosition(target);
-        backR.setTargetPosition(target);
+        frontL.setTargetPosition(math(inches));
+        frontR.setTargetPosition(math(inches));
+        backL.setTargetPosition(math(inches));
+        backR.setTargetPosition(math(inches));
         //sets motors to run using encoder
         frontL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         frontR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        frontL.setPower(powerLvl);
-        frontR.setPower(-powerLvl);
-        backL.setPower(-powerLvl);
-        backR.setPower(powerLvl);
+        frontL.setPower(-powerLvl);
+        backL.setPower(powerLvl);
+        frontR.setPower(powerLvl);
+        backR.setPower(-powerLvl);
     }
 
+    public void MoveVerticle(int TimeMS, double power) throws InterruptedException {
+        frontL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontR.setPower(-power);
+        frontL.setPower(-power);
+        backR.setPower(-power);
+        backL.setPower(-power);
+        sleep(TimeMS);
+        frontR.setPower(0);
+        frontL.setPower(0);
+        backR.setPower(0);
+        backL.setPower(0);
+    }
+
+    public void MoveHoritzontal(int TimeMS, double power) throws InterruptedException { //Positive Power is RightMovement
+        frontL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontL.setPower(-power);
+        backL.setPower(power);
+        frontR.setPower(power);
+        backR.setPower(-power);
+        sleep(TimeMS);
+        frontR.setPower(0);
+        frontL.setPower(0);
+        backR.setPower(0);
+        backL.setPower(0);
+    }
 
 }
