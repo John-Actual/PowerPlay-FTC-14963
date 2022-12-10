@@ -21,6 +21,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -33,7 +34,7 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
 
 import java.util.ArrayList;
 
-@TeleOp
+@Autonomous
 public class  Camera extends LinearOpMode
 {
     OpenCvCamera camera;
@@ -62,11 +63,10 @@ public class  Camera extends LinearOpMode
 
     AprilTagDetection tagOfInterest = null;
 
-    //RobotHardware robot = new RobotHardware();
-
     @Override
-    public void runOpMode() throws InterruptedException {
-        //robot.init(hardwareMap);
+    public void runOpMode() {
+        robot.init(hardwareMap);
+
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
@@ -173,11 +173,22 @@ public class  Camera extends LinearOpMode
         /* Actually do something useful */
         if (tagOfInterest == null || tagOfInterest.id == Left) {
             //left code
+            robot.closeClaw();
+            robot.frontBackAuto(24, 0.5);
+            sleep(2000);
+            robot.leftRightAuto(- 24, 0.5);
         }else if (tagOfInterest.id == Right) {
             //right code
-            robot.MoveHoritzontal(60*25, 0.5);
+            robot.closeClaw();
+            robot.frontBackAuto(24, 0.5);
+            sleep(2000);
+            robot.leftRightAuto(24, 0.5);
         }else if (tagOfInterest.id == Middle) {
             //middle code
+            robot.closeClaw();
+            robot.frontBackAuto(24, 0.5);
+            sleep(2000);
+
         }
 
         /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */

@@ -46,7 +46,6 @@ public class RobotHardware {
     public Servo servoR;
 
     HardwareMap hardwareMap = null;
-    private ElapsedTime period = new ElapsedTime();
 
 
     //initalizes all hardware, must be run before movement
@@ -123,7 +122,7 @@ public class RobotHardware {
         backL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         //When bool is true, robot will move forward left, backward right
-        if (bool == true) {
+        if (bool) {
             frontL.setPower(value);
             backR.setPower(value);
         }else {
@@ -218,10 +217,10 @@ public class RobotHardware {
         backL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        frontR.setTargetPosition(- math(inches));
-        frontL.setTargetPosition(math(inches));
-        backL.setTargetPosition(math(inches));
-        backR.setTargetPosition(- math(inches));
+        frontR.setTargetPosition(math(inches));
+        frontL.setTargetPosition(- math(inches));
+        backL.setTargetPosition(- math(inches));
+        backR.setTargetPosition(math(inches));
         //sets motors to run using encoder
         frontR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         frontL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -243,20 +242,20 @@ public class RobotHardware {
         backL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //sets target position
-        frontL.setTargetPosition(math(inches));
+        frontL.setTargetPosition(- math(inches));
         frontR.setTargetPosition(math(inches));
         backL.setTargetPosition(math(inches));
-        backR.setTargetPosition(math(inches));
+        backR.setTargetPosition(- math(inches));
         //sets motors to run using encoder
         frontL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         frontR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        frontL.setPower(-powerLvl);
+        frontL.setPower(powerLvl);
         backL.setPower(powerLvl);
         frontR.setPower(powerLvl);
-        backR.setPower(-powerLvl);
+        backR.setPower(powerLvl);
     }
 
     public void MoveVerticle(int TimeMS, double power) throws InterruptedException {

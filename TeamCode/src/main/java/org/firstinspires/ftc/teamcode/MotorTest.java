@@ -28,7 +28,7 @@ public class MotorTest extends LinearOpMode {
     RobotHardware robot = new RobotHardware();
 
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() {
         robot.init(hardwareMap);
         telemetry.addData("Status", "Initialized");
 
@@ -39,8 +39,9 @@ public class MotorTest extends LinearOpMode {
 /*
 
  */
-        robot.frontBackAuto(6, 0.3);
-        sleep(10000);
+        robot.frontBackAuto(-24, 0.8);
+        sleep(5000);
+        robot.leftRightAuto(6, 0.4);
 
 
         // run until the end of the match (driver presses STOP)
