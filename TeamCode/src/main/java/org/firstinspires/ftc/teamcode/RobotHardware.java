@@ -19,17 +19,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 
 package org.firstinspires.ftc.teamcode;
 
-import static java.lang.Thread.sleep;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.HardwareDevice;
-import com.qualcomm.robotcore.hardware.ServoController;
-import com.qualcomm.robotcore.util.ElapsedTime;
+
+
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.Range;
 
 
 public class RobotHardware {
@@ -40,12 +36,14 @@ public class RobotHardware {
     public DcMotor backR;
     public DcMotor mActuatorLeft;
     public DcMotor mActuatorRight;
-    public HardwareDevice webcam_1;
 
     public Servo servoL;
     public Servo servoR;
 
-    HardwareMap hardwareMap = null;
+    public int firstJunction = 1300;
+    public int secondJunction = 2265;
+    public int thirdJunction = 3000;
+
 
 
     //initalizes all hardware, must be run before movement
@@ -74,13 +72,6 @@ public class RobotHardware {
         backL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         backR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
-        /*
-        frontL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        */
-
         servoL.setPosition(0);
         servoR.setDirection(Servo.Direction.REVERSE);
         servoR.setPosition(0);
@@ -100,50 +91,17 @@ public class RobotHardware {
     Start of Controller Movement Section
     */
 
-    //Forward and Backward control with Controller
-    public void frontBackControlled(double value) {
+    public void movement(double x, double y) {
         //Sets motors to run without encoder
         frontL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        frontL.setPower(value);
-        backL.setPower(value);
-        frontR.setPower(- value);
-        backR.setPower(- value);
-    }
-
-    //moves robot diagonally with Controller
-    public void diagonalControlled(double value, boolean bool) {
-        //sets motors to run without encoder
-        frontL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        //When bool is true, robot will move forward left, backward right
-        if (bool) {
-            frontL.setPower(value);
-            backR.setPower(value);
-        }else {
-            backL.setPower(value);
-            frontR.setPower(value);
-        }
-    }
-
-    //moves robot left and right with Controller
-    public void leftRightControlled(double value) {
-        //sets motors to run without encoder
-        frontL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        frontL.setPower(-value);
-        backL.setPower(value);
-        frontR.setPower(value);
-        backR.setPower(-value);
-
+        frontL.setPower(y - x);
+        backL.setPower(y + x);
+        frontR.setPower((-y) + x);
+        backR.setPower((-y) - x);
     }
 
     //rotates robot about an axis with Controller
@@ -154,24 +112,10 @@ public class RobotHardware {
         backL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        frontL.setPower(value);
-        backL.setPower(value);
-        frontR.setPower(value);
-        backR.setPower(value);
-    }
-
-    public void actuatorControlled(double value) {
-
-
-        mActuatorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        mActuatorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        mActuatorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        mActuatorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        mActuatorLeft.setPower(value);
-        mActuatorRight.setPower(- value);
-
+        frontL.setPower(-value);
+        backL.setPower(-value);
+        frontR.setPower(-value);
+        backR.setPower(-value);
     }
 
     /*
@@ -208,8 +152,6 @@ public class RobotHardware {
     Start of Autonomous Section
     */
 
-
-
     //moves forward and back autonomously
     public void frontBackAuto(int inches, double powerLvl) {
         frontR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -237,6 +179,7 @@ public class RobotHardware {
 
     //moves left and right autonomously
     public void leftRightAuto(int inches, double powerLvl) {
+        //Negative inches is left
         frontR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -258,36 +201,29 @@ public class RobotHardware {
         backR.setPower(powerLvl);
     }
 
-    public void MoveVerticle(int TimeMS, double power) throws InterruptedException {
-        frontL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontR.setPower(-power);
-        frontL.setPower(-power);
-        backR.setPower(-power);
-        backL.setPower(-power);
-        sleep(TimeMS);
-        frontR.setPower(0);
-        frontL.setPower(0);
-        backR.setPower(0);
-        backL.setPower(0);
-    }
+    public void rotateAuto(int degrees, double powerLvl) {
+        //negative degrees goes to the right
+        frontR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-    public void MoveHoritzontal(int TimeMS, double power) throws InterruptedException { //Positive Power is RightMovement
-        frontL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontL.setPower(-power);
-        backL.setPower(power);
-        frontR.setPower(power);
-        backR.setPower(-power);
-        sleep(TimeMS);
-        frontR.setPower(0);
-        frontL.setPower(0);
-        backR.setPower(0);
-        backL.setPower(0);
+        final double degree = 1080 / 90;
+
+        frontL.setTargetPosition((int) (degree * degrees));
+        frontR.setTargetPosition((int) (degree * degrees));
+        backL.setTargetPosition((int) (degree * degrees));
+        backR.setTargetPosition((int) (degree * degrees));
+
+        frontL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        frontL.setPower(powerLvl);
+        backL.setPower(powerLvl);
+        frontR.setPower(powerLvl);
+        backR.setPower(powerLvl);
     }
 
 }

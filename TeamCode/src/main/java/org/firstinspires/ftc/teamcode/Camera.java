@@ -205,4 +205,28 @@ public class  Camera extends LinearOpMode
         telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
         telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
     }
+
+    void coneStack() {
+            int[] coneHeights = {0,0,0,0,0};
+            robot.frontBackAuto(27, 0.8);
+            while (opModeIsActive() && robot.frontR.isBusy()) {}
+
+            robot.leftRightAuto(-24, 0.8);
+            robot.linearActuator(robot.thirdJunction);
+            while (opModeIsActive() && robot.frontR.isBusy() && robot.mActuatorLeft.isBusy()) {}
+
+            robot.openClaw();
+            robot.frontBackAuto(-3, 0.8);
+            while (opModeIsActive() && robot.frontR.isBusy() && robot.mActuatorLeft.isBusy()) {}
+
+            robot.linearActuator(0);
+            robot.leftRightAuto(24, 0.8);
+            while (opModeIsActive() && robot.frontR.isBusy() && robot.mActuatorLeft.isBusy()) {}
+
+            for (int i = 0; i < 5; i++) {
+
+            }
+
+
+    }
 }

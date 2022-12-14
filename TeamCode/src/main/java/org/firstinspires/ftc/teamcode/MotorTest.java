@@ -39,9 +39,8 @@ public class MotorTest extends LinearOpMode {
 /*
 
  */
-        robot.frontBackAuto(-24, 0.8);
+        robot.rotateAuto(180,1);
         sleep(5000);
-        robot.leftRightAuto(6, 0.4);
 
 
         // run until the end of the match (driver presses STOP)

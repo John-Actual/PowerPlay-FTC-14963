@@ -43,62 +43,30 @@ public class DriverControlled extends LinearOpMode {
         robot.mActuatorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.mActuatorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.frontR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        double powerLvl = 1;
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            telemetry.addData("Encoder Value:", robot.frontR.getCurrentPosition());
+            telemetry.addData("Encoder Value:", robot.frontL.getCurrentPosition());
             telemetry.update();
 
             //Forward, back, left, right, and diagonal Movement
-            if (this.gamepad1.dpad_up == true) {
-                //forward
-                robot.frontBackControlled(-powerLvl);
-            }else if (this.gamepad1.dpad_down == true) {
-                //backward
-                robot.frontBackControlled(powerLvl);
-            }else if (this.gamepad1.dpad_right == true) {
-                //right
-                robot.leftRightControlled(powerLvl);
-            }else if (this.gamepad1.dpad_left == true) {
-                //left
-                robot.leftRightControlled(-powerLvl);
-            }else if (this.gamepad1.dpad_up == true && this.gamepad1.dpad_left == true) {
-                //forward left
-                robot.diagonalControlled(powerLvl, true);
-            }else if (this.gamepad1.dpad_down == true && this.gamepad1.dpad_right == true) {
-                //backward left
-                robot.diagonalControlled(-powerLvl, true);
-            }else if (this.gamepad1.dpad_up == true && this.gamepad1.dpad_right == true ) {
-                //forward right
-                robot.diagonalControlled(powerLvl, false);
-            }else if (this.gamepad1.dpad_down == true && this.gamepad1.dpad_left == true) {
-                //backward left
-                robot.diagonalControlled(-powerLvl, false);
+            if (this.gamepad1.right_trigger != 0) {
+                robot.movement(this.gamepad1.left_stick_x / 2, this.gamepad1.left_stick_y / 2);
+                robot.rotateControlled(this.gamepad1.right_stick_x / 2);
             }else {
-                //no movement
-                robot.frontBackControlled(0);
-                robot.leftRightControlled(0);
-                robot.diagonalControlled(0, true);
-                robot.diagonalControlled(0, false);
-            }
-
-            //Rotation
-            if(this.gamepad1.right_stick_x != 0) {
-                robot.rotateControlled(- this.gamepad1.right_stick_x);
-            }else {
-                robot.rotateControlled(0);
+                robot.movement(this.gamepad1.left_stick_x, this.gamepad1.left_stick_y);
+                robot.rotateControlled(this.gamepad1.right_stick_x);
             }
 
             //moving the linear actuator to different positions
             if (this.gamepad1.x == true) {
-                robot.linearActuator(1300);
+                robot.linearActuator(robot.firstJunction);
             }else if (this.gamepad1.y == true) {
-                robot.linearActuator(2265);
+                robot.linearActuator(robot.secondJunction);
             }else if (this.gamepad1.b == true) {
-                robot.linearActuator(3000);
+                robot.linearActuator(robot.thirdJunction);
             }else if (this.gamepad1.a == true) {
                 robot.openClaw();
                 robot.linearActuator(0);
@@ -113,11 +81,7 @@ public class DriverControlled extends LinearOpMode {
                 robot.openClaw();
             }
 
-            if (this.gamepad1.right_trigger != 0) {
-                powerLvl = 0.4;
-            }else {
-                powerLvl = 1;
-            }
+
 
 
         }
