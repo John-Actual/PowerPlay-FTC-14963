@@ -78,12 +78,12 @@ public class RobotHardware {
 
     }
     //Math
-    public int math(int numOfInches) {
+    public double math(double numOfInches) {
         final int ticks_per_rotation = 550;
         final double inches_per_rotation = 3.54331 * Math.PI;
         double ticks_per_inch = ticks_per_rotation / inches_per_rotation;
 
-        return numOfInches * (int) ticks_per_inch;
+        return numOfInches * ticks_per_inch;
 
     }
 
@@ -153,42 +153,43 @@ public class RobotHardware {
     */
 
     //moves forward and back autonomously
-    public void frontBackAuto(int inches, double powerLvl) {
+    public void frontBackAuto(double inches, double powerLvl) {
         frontR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        frontR.setTargetPosition(math(inches));
-        frontL.setTargetPosition(- math(inches));
-        backL.setTargetPosition(- math(inches));
-        backR.setTargetPosition(math(inches));
+        frontR.setTargetPosition((int) math(inches));
+        frontL.setTargetPosition((int)- math(inches));
+        backL.setTargetPosition((int)- math(inches));
+        backR.setTargetPosition((int) math(inches));
         //sets motors to run using encoder
         frontR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         frontL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        frontR.setPower(powerLvl);
-        frontL.setPower(powerLvl);
         backL.setPower(powerLvl);
         backR.setPower(powerLvl);
+        frontR.setPower(powerLvl);
+        frontL.setPower(powerLvl);
+
     }
 
 
 
     //moves left and right autonomously
-    public void leftRightAuto(int inches, double powerLvl) {
+    public void leftRightAuto(double inches, double powerLvl) {
         //Negative inches is left
         frontR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //sets target position
-        frontL.setTargetPosition(- math(inches));
-        frontR.setTargetPosition(math(inches));
-        backL.setTargetPosition(math(inches));
-        backR.setTargetPosition(- math(inches));
+        frontL.setTargetPosition((int) - math(inches));
+        frontR.setTargetPosition((int) math(inches));
+        backL.setTargetPosition((int) math(inches));
+        backR.setTargetPosition((int) - math(inches));
         //sets motors to run using encoder
         frontL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         frontR.setMode(DcMotor.RunMode.RUN_TO_POSITION);

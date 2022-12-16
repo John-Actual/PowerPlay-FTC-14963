@@ -173,22 +173,27 @@ public class  Camera extends LinearOpMode
         /* Actually do something useful */
         if (tagOfInterest == null || tagOfInterest.id == Left) {
             //left code
-            robot.closeClaw();
-            robot.frontBackAuto(24, 0.5);
-            sleep(2000);
-            robot.leftRightAuto(- 24, 0.5);
+            coneStack();
+            sleep(800);
+            robot.leftRightAuto(-12, 0.5);
+            sleep(800);
+            robot.linearActuator(0);
+            robot.rotateAuto(-90, 0.5);
         }else if (tagOfInterest.id == Right) {
             //right code
-            robot.closeClaw();
-            robot.frontBackAuto(24, 0.5);
-            sleep(2000);
-            robot.leftRightAuto(24, 0.5);
+            coneStack();
+            sleep(800);
+            robot.leftRightAuto(36, 0.5);
+            sleep(1800);
+            robot.linearActuator(0);
+            robot.rotateAuto(-180, 0.5);
         }else if (tagOfInterest.id == Middle) {
             //middle code
-            robot.closeClaw();
-            robot.frontBackAuto(24, 0.5);
-            sleep(2000);
-
+            coneStack();
+            robot.leftRightAuto(12, 0.5);
+            sleep(800);
+            robot.linearActuator(0);
+            robot.rotateAuto(-90, 0.5);
         }
 
         /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
@@ -207,26 +212,41 @@ public class  Camera extends LinearOpMode
     }
 
     void coneStack() {
-            int[] coneHeights = {0,0,0,0,0};
-            robot.frontBackAuto(27, 0.8);
-            while (opModeIsActive() && robot.frontR.isBusy()) {}
+        robot.closeClaw();
+        sleep (200);
 
-            robot.leftRightAuto(-24, 0.8);
-            robot.linearActuator(robot.thirdJunction);
-            while (opModeIsActive() && robot.frontR.isBusy() && robot.mActuatorLeft.isBusy()) {}
+        robot.frontBackAuto(1, 0.6);
+        sleep(800);
 
-            robot.openClaw();
-            robot.frontBackAuto(-3, 0.8);
-            while (opModeIsActive() && robot.frontR.isBusy() && robot.mActuatorLeft.isBusy()) {}
+        robot.leftRightAuto(3, 0.3);
+        sleep(800);
 
-            robot.linearActuator(0);
-            robot.leftRightAuto(24, 0.8);
-            while (opModeIsActive() && robot.frontR.isBusy() && robot.mActuatorLeft.isBusy()) {}
+        robot.frontBackAuto(24, 0.6);
+        sleep(1800);
 
-            for (int i = 0; i < 5; i++) {
+        robot.leftRightAuto(-12, 0.8);
+        robot.linearActuator(robot.firstJunction);
+        sleep(1000);
 
-            }
+        robot.frontBackAuto(2, 0.3);
+        sleep(800);
 
+        robot.openClaw();
+        sleep(1000);
+
+        robot.frontBackAuto(-3, 0.3);
+        sleep(800);
+/*
+        robot.leftRightAuto(12, 0.8);
+        sleep(1000);
+
+        robot.frontBackAuto(20, 0.6);
+        sleep(1800);
+
+        robot.rotateAuto(90, 0.4);
+        robot.linearActuator(0);
+        sleep(1500);
+*/
 
     }
 }
