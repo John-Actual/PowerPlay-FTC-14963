@@ -32,6 +32,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 
+import java.text.ChoiceFormat;
 import java.util.ArrayList;
 
 @Autonomous
@@ -186,7 +187,7 @@ public class  Camera extends LinearOpMode
             robot.leftRightAuto(36, 0.5);
             sleep(1800);
             robot.linearActuator(0);
-            robot.rotateAuto(-180, 0.5);
+            robot.rotateAuto(180, 0.5);
         }else if (tagOfInterest.id == Middle) {
             //middle code
             coneStack();
@@ -224,7 +225,7 @@ public class  Camera extends LinearOpMode
         robot.frontBackAuto(24, 0.6);
         sleep(1800);
 
-        robot.leftRightAuto(-12, 0.8);
+        robot.leftRightAuto(-13, 0.8);
         robot.linearActuator(robot.firstJunction);
         sleep(1000);
 
