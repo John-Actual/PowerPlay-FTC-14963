@@ -43,12 +43,12 @@ public class RobotHardware {
     public int firstJunction = 1300;
     public int secondJunction = 2265;
     public int thirdJunction = 3000;
-
-    final int frontLRotation = 536;
-    final int frontRRotation = 535;
-    final int backLRotation = 538;
-    final int backRRotation = 536;
-
+/*
+    final int frontLRotation = 0;
+    final int frontRRotation = 547;
+    final int backLRotation = 0;
+    final int backRRotation = 543;
+*/
 
 
     //initalizes all hardware, must be run before movement
@@ -83,8 +83,8 @@ public class RobotHardware {
 
     }
     //Math
-    public double math(double numOfInches,int rotationTicks) {
-        final int ticks_per_rotation = rotationTicks;
+    public double math(double numOfInches/*,int rotationTicks*/) {
+        final int ticks_per_rotation = 550;
         final double inches_per_rotation = 3.54331 * Math.PI;
         double ticks_per_inch = ticks_per_rotation / inches_per_rotation;
 
@@ -105,8 +105,8 @@ public class RobotHardware {
 
         frontL.setPower(y - x);
         backL.setPower(y + x);
-        frontR.setPower((-y) - x);// x was positive
-        backR.setPower((-y) + x); // x was negative
+        frontR.setPower((-y) + x);// x was positive
+        backR.setPower((-y) - x); // x was negative
     }
 
     //rotates robot about an axis with Controller
@@ -164,10 +164,10 @@ public class RobotHardware {
         backL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        frontR.setTargetPosition((int) math(inches, frontLRotation));
-        frontL.setTargetPosition((int)- math(inches, frontRRotation));
-        backL.setTargetPosition((int)- math(inches, backLRotation));
-        backR.setTargetPosition((int) math(inches, backRRotation));
+        frontR.setTargetPosition((int) math(inches));
+        frontL.setTargetPosition((int)- math(inches));
+        backL.setTargetPosition((int)- math(inches));
+        backR.setTargetPosition((int) math(inches));
         //sets motors to run using encoder
         frontR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         frontL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -191,10 +191,10 @@ public class RobotHardware {
         backL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //sets target position
-        frontL.setTargetPosition((int) - math(inches, frontLRotation));
-        frontR.setTargetPosition((int) - math(inches, frontRRotation));//was negative
-        backL.setTargetPosition((int) math(inches, backLRotation));
-        backR.setTargetPosition((int)  math(inches, backRRotation));//was negative
+        frontL.setTargetPosition((int) - math(inches));
+        frontR.setTargetPosition((int) math(inches));//was positiveS
+        backL.setTargetPosition((int) math(inches));
+        backR.setTargetPosition((int)  - math(inches));//was negative
         //sets motors to run using encoder
         frontL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         frontR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
