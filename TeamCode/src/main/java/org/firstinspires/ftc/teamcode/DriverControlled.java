@@ -19,15 +19,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.ServoController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 @TeleOp(name = "DriverControlled", group = "TeleOp")
@@ -46,6 +40,10 @@ public class DriverControlled extends LinearOpMode {
         robot.frontL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.backR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.backL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.frontL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.backL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.frontR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.backR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
@@ -55,34 +53,34 @@ public class DriverControlled extends LinearOpMode {
             telemetry.addData("frontR", robot.frontR.getCurrentPosition());
             telemetry.addData("backR", robot.backR.getCurrentPosition());
             telemetry.addData("backL", robot.backL.getCurrentPosition());
+            telemetry.addData("actuatorR", robot.mActuatorRight.getCurrentPosition());
+            telemetry.addData("actuatorL", robot.mActuatorLeft.getCurrentPosition());
             telemetry.update();
 
-            //Forward, back, left, right, and diagonal Movement
-            if (this.gamepad1.right_trigger != 0) {
-                robot.movement(this.gamepad1.left_stick_x / 2, this.gamepad1.left_stick_y / 2);
-                robot.rotateControlled(this.gamepad1.right_stick_x / 2);
+            //Forward, back, left, right, rotational, and diagonal Movement
+            if (this.gamepad1.right_trigger != 0 ) {
+                robot.movement(this.gamepad1.left_stick_x, this.gamepad1.left_stick_y / 2, this.gamepad1.right_stick_x / 2);
             }else {
-                robot.movement(this.gamepad1.left_stick_x, this.gamepad1.left_stick_y);
-                robot.rotateControlled(this.gamepad1.right_stick_x);
+                robot.movement(this.gamepad1.left_stick_x, this.gamepad1.left_stick_y, this.gamepad1.right_stick_x / 1.3333333333333333);
             }
 
             //moving the linear actuator to different positions
-            if (this.gamepad1.x == true) {
+            if (this.gamepad1.x) {
                 robot.linearActuator(robot.firstJunction);
-            }else if (this.gamepad1.y == true) {
+            }else if (this.gamepad1.y) {
                 robot.linearActuator(robot.secondJunction);
-            }else if (this.gamepad1.b == true) {
+            }else if (this.gamepad1.b) {
                 robot.linearActuator(robot.thirdJunction);
-            }else if (this.gamepad1.a == true) {
+            }else if (this.gamepad1.a) {
                 robot.openClaw();
                 robot.linearActuator(0);
             }
 
             //closing and opening the claw
-            if (this.gamepad1.right_bumper == true) {
+            if (this.gamepad1.right_bumper) {
                 //Closes claw by moving servos together
                 robot.closeClaw();
-            }else if (this.gamepad1.left_bumper == true) {
+            }else if (this.gamepad1.left_bumper) {
                 //Opens claw by moving servos to zero position
                 robot.openClaw();
             }

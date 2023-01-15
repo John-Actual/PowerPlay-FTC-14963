@@ -21,18 +21,17 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import android.annotation.SuppressLint;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvInternalCamera;
 
-import java.text.ChoiceFormat;
 import java.util.ArrayList;
 
 @Autonomous
@@ -201,6 +200,7 @@ public class  Camera extends LinearOpMode
         while (opModeIsActive()) {sleep(20);}
     }
 
+    @SuppressLint("DefaultLocale")
     void tagToTelemetry(AprilTagDetection detection)
     {
         telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
@@ -222,14 +222,14 @@ public class  Camera extends LinearOpMode
         robot.leftRightAuto(3, 0.3);
         sleep(800);
 
-        robot.frontBackAuto(24, 0.6);
+        robot.frontBackAuto(25, 0.6);
         sleep(1800);
 
         robot.leftRightAuto(-13, 0.8);
         robot.linearActuator(robot.firstJunction);
         sleep(1000);
 
-        robot.frontBackAuto(2, 0.3);
+        robot.frontBackAuto(3, 0.3);
         sleep(800);
 
         robot.openClaw();

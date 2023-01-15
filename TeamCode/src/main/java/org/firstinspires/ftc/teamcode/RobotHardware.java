@@ -22,7 +22,6 @@ package org.firstinspires.ftc.teamcode;
 
 
 
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -40,16 +39,24 @@ public class RobotHardware {
     public Servo servoL;
     public Servo servoR;
 
-    public int firstJunction = 1300;
+    public int firstJunction = 1200;
     public int secondJunction = 2265;
     public int thirdJunction = 3000;
-/*
-    final int frontLRotation = 0;
-    final int frontRRotation = 547;
-    final int backLRotation = 0;
-    final int backRRotation = 543;
-*/
 
+    final int frontLRotation = 537;
+    final int frontRRotation = 539;
+    final int backLRotation = 536;
+    final int backRRotation = 538;
+
+    MultiThreadControl FLT = new MultiThreadControl();
+    MultiThreadControl FRT = new MultiThreadControl();
+    MultiThreadControl BLT = new MultiThreadControl();
+    MultiThreadControl BRT = new MultiThreadControl();
+
+    MultiThreadAuto FLTA = new MultiThreadAuto();
+    MultiThreadAuto FRTA = new MultiThreadAuto();
+    MultiThreadAuto BLTA = new MultiThreadAuto();
+    MultiThreadAuto BRTA = new MultiThreadAuto();
 
     //initalizes all hardware, must be run before movement
     public void init(HardwareMap hardwareMap) {
@@ -83,44 +90,40 @@ public class RobotHardware {
 
     }
     //Math
-    public double math(double numOfInches/*,int rotationTicks*/) {
-        final int ticks_per_rotation = 550;
+    public double linear(double numOfInches,int rotationTicks) {
         final double inches_per_rotation = 3.54331 * Math.PI;
-        double ticks_per_inch = ticks_per_rotation / inches_per_rotation;
+        double ticks_per_inch = rotationTicks / inches_per_rotation;
 
         return numOfInches * ticks_per_inch;
 
+    }
+
+    public double angular(double degrees, int rotationTicks) {
+        final double w = 14;
+        final double l = 15.5;
+
+        double diagonal = Math.sqrt(Math.pow(w, 2) + Math.pow(l, 2));
+        double circumfrence = diagonal * Math.PI;
+        double oneDegree = circumfrence / 360;
+
+        return linear(oneDegree, rotationTicks) * degrees;
     }
 
     /*
     Start of Controller Movement Section
     */
 
-    public void movement(double x, double y) {
-        //Sets motors to run without encoder
-        frontL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    // x is x axis, y is y axis, and r is rotational value
+    public void movement(double x, double y, double r) {
+        FRT.load(frontR, (-y) - x - r);
+        FLT.load(frontL, y - x - r);
+        BLT.load(backL, y + x - r);
+        BRT.load(backR, (-y) + x - r);
 
-        frontL.setPower(y - x);
-        backL.setPower(y + x);
-        frontR.setPower((-y) + x);// x was positive
-        backR.setPower((-y) - x); // x was negative
-    }
-
-    //rotates robot about an axis with Controller
-    public void rotateControlled(double value) {
-        //sets motors to run without encoder
-        frontL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        frontL.setPower(-value);
-        backL.setPower(-value);
-        frontR.setPower(-value);
-        backR.setPower(-value);
+        FRT.start();
+        FLT.start();
+        BRT.start();
+        BLT.start();
     }
 
     /*
@@ -157,79 +160,30 @@ public class RobotHardware {
     Start of Autonomous Section
     */
 
-    //moves forward and back autonomously
-    public void frontBackAuto(double inches, double powerLvl) {
+    public void movementAuto(double xInches, double yInches, double rDegrees, double power) {
         frontR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        frontR.setTargetPosition((int) math(inches));
-        frontL.setTargetPosition((int)- math(inches));
-        backL.setTargetPosition((int)- math(inches));
-        backR.setTargetPosition((int) math(inches));
-        //sets motors to run using encoder
+        frontR.setTargetPosition((int) (linear(yInches, frontRRotation) -  linear(xInches, frontRRotation) + angular(rDegrees, frontRRotation)));
+        frontL.setTargetPosition((int) (- linear(yInches, frontLRotation) - linear(xInches, frontLRotation) + angular(rDegrees, frontLRotation)));
+        backL.setTargetPosition((int) (- linear(yInches, backLRotation) + linear(xInches, backLRotation) + angular(rDegrees, backLRotation)));
+        backR.setTargetPosition((int) (linear(yInches, backRRotation) + linear(xInches, backRRotation) + angular(rDegrees, backRRotation)));
+
         frontR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         frontL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        backL.setPower(powerLvl);
-        backR.setPower(powerLvl);
-        frontR.setPower(powerLvl);
-        frontL.setPower(powerLvl);
+        FRTA.load(frontR, power);
+        FLTA.load(frontL, power);
+        BLTA.load(backL, power);
+        BRTA.load(backR, power);
 
+        FRTA.start();
+        FLTA.start();
+        BRTA.start();
+        BLTA.start();
     }
-
-
-
-    //moves left and right autonomously
-    public void leftRightAuto(double inches, double powerLvl) {
-        //Negative inches is left
-        frontR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //sets target position
-        frontL.setTargetPosition((int) - math(inches));
-        frontR.setTargetPosition((int) math(inches));//was positiveS
-        backL.setTargetPosition((int) math(inches));
-        backR.setTargetPosition((int)  - math(inches));//was negative
-        //sets motors to run using encoder
-        frontL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        frontR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        backL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        backR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        frontL.setPower(powerLvl);
-        backL.setPower(powerLvl);
-        frontR.setPower(powerLvl);
-        backR.setPower(powerLvl);
-    }
-
-    public void rotateAuto(int degrees, double powerLvl) {
-        //negative degrees goes to the right
-        frontR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        final double degree = 1080 / 90;
-
-        frontL.setTargetPosition((int) (degree * degrees));
-        frontR.setTargetPosition((int) (degree * degrees));
-        backL.setTargetPosition((int) (degree * degrees));
-        backR.setTargetPosition((int) (degree * degrees));
-
-        frontL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        frontR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        backL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        backR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        frontL.setPower(powerLvl);
-        backL.setPower(powerLvl);
-        frontR.setPower(powerLvl);
-        backR.setPower(powerLvl);
-    }
-
 }
