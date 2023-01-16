@@ -175,25 +175,25 @@ public class  Camera extends LinearOpMode
             //left code
             coneStack();
             sleep(800);
-            robot.leftRightAuto(-12, 0.5);
+            robot.movementAuto(-12, 0, 0, 0.5);
             sleep(800);
             robot.linearActuator(0);
-            robot.rotateAuto(-90, 0.5);
+            robot.movementAuto(0, 0, -90, 0.5);
         }else if (tagOfInterest.id == Right) {
             //right code
             coneStack();
             sleep(800);
-            robot.leftRightAuto(36, 0.5);
+            robot.movementAuto(36, 0, 0, 0.5);
             sleep(1800);
             robot.linearActuator(0);
-            robot.rotateAuto(180, 0.5);
+            robot.movementAuto(0, 0, 180, 0.5);
         }else if (tagOfInterest.id == Middle) {
             //middle code
             coneStack();
-            robot.leftRightAuto(12, 0.5);
+            robot.movementAuto(12, 0, 0, 0.5);
             sleep(800);
             robot.linearActuator(0);
-            robot.rotateAuto(-90, 0.5);
+            robot.movementAuto(0, 0, -90, 0.5);
         }
 
         /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
@@ -216,26 +216,26 @@ public class  Camera extends LinearOpMode
         robot.closeClaw();
         sleep (200);
 
-        robot.frontBackAuto(1, 0.6);
+        robot.movementAuto(0, 1, 0, 0.6);
         sleep(800);
 
-        robot.leftRightAuto(3, 0.3);
+        robot.movementAuto(3, 0, 0, 0.3);
         sleep(800);
 
-        robot.frontBackAuto(25, 0.6);
+        robot.movementAuto(0, 25, 0, 0.6);
         sleep(1800);
 
-        robot.leftRightAuto(-13, 0.8);
+        robot.movementAuto(-13, 0, 0, 0.8);
         robot.linearActuator(robot.firstJunction);
         sleep(1000);
 
-        robot.frontBackAuto(3, 0.3);
+        robot.movementAuto(0, 3, 0, 0.3);
         sleep(800);
 
         robot.openClaw();
         sleep(1000);
 
-        robot.frontBackAuto(-3, 0.3);
+        robot.movementAuto(0, -3, 0, 0.3);
         sleep(800);
 /*
         robot.leftRightAuto(12, 0.8);
