@@ -58,10 +58,14 @@ public class DriverControlled extends LinearOpMode {
             telemetry.update();
 
             //Forward, back, left, right, rotational, and diagonal Movement
-            if (this.gamepad1.right_trigger != 0 ) {
-                robot.movement(this.gamepad1.left_stick_x, this.gamepad1.left_stick_y / 2, this.gamepad1.right_stick_x / 2);
-            }else {
-                robot.movement(this.gamepad1.left_stick_x, this.gamepad1.left_stick_y, this.gamepad1.right_stick_x / 1.3333333333333333);
+            // uses the inputs of the controller to fill in the values of the movement method
+            //if the robots arm is at full height it will go at half speed, or if the right trigger is pushed down
+            if (this.gamepad1.right_trigger != 0) {
+                robot.movement(this.gamepad1.left_stick_x/2, this.gamepad1.left_stick_y/2, this.gamepad1.right_stick_x / 2);
+            } else if (this.gamepad1.left_trigger != 0 || robot.mActuatorLeft.getCurrentPosition() > 3500) {
+                robot.movement(this.gamepad1.left_stick_x/4, this.gamepad1.left_stick_y/4, this.gamepad1.right_stick_x / 4);
+            } else {
+                robot.movement(this.gamepad1.left_stick_x, this.gamepad1.left_stick_y, this.gamepad1.right_stick_x/ 1.333333333);
             }
 
             //moving the linear actuator to different positions
@@ -70,23 +74,32 @@ public class DriverControlled extends LinearOpMode {
             }else if (this.gamepad1.y) {
                 robot.linearActuator(robot.secondJunction);
             }else if (this.gamepad1.b) {
-                robot.linearActuator(robot.thirdJunction);
+                robot.linearActuator(4000);
             }else if (this.gamepad1.a) {
-                robot.openClaw();
-                robot.linearActuator(0);
+                if (robot.mActuatorLeft.getCurrentPosition() < 100 || robot.mActuatorLeft.getCurrentPosition() > 1000) {
+                    robot.linearActuator(400);
+                    sleep(200);
+                    robot.openClaw(0.165, 0.1);
+                } else if (robot.mActuatorLeft.getCurrentPosition() > 100 || robot.mActuatorLeft.getCurrentPosition() < 500) {
+                    robot.openClaw(0.3, 0.25);
+                    sleep(200);
+                    robot.linearActuator(0);
+
+                }
             }
 
             //closing and opening the claw
             if (this.gamepad1.right_bumper) {
                 //Closes claw by moving servos together
                 robot.closeClaw();
+                sleep(200);
             }else if (this.gamepad1.left_bumper) {
-                //Opens claw by moving servos to zero position
-                robot.openClaw();
+                if (robot.mActuatorLeft.getCurrentPosition() < 100 || robot.mActuatorLeft.getCurrentPosition() > 1000) {
+                    robot.openClaw(0.3, 0.25);
+                } else if (robot.mActuatorLeft.getCurrentPosition() > 100 || robot.mActuatorLeft.getCurrentPosition() < 500) {
+                    robot.openClaw(0.165, 0.1);
+                }
             }
-
-
-
 
         }
     }

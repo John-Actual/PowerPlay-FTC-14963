@@ -39,9 +39,9 @@ public class RobotHardware {
     public Servo servoL;
     public Servo servoR;
 
-    public int firstJunction = 1200;
-    public int secondJunction = 2265;
-    public int thirdJunction = 3000;
+    public int firstJunction = 1700;
+    public int secondJunction = 2900;
+    public int thirdJunction = 4000;
 
     final int frontLRotation = 537;
     final int frontRRotation = 539;
@@ -52,15 +52,12 @@ public class RobotHardware {
     MultiThreadControl FRT = new MultiThreadControl();
     MultiThreadControl BLT = new MultiThreadControl();
     MultiThreadControl BRT = new MultiThreadControl();
-
-    MultiThreadAuto FLTA = new MultiThreadAuto();
-    MultiThreadAuto FRTA = new MultiThreadAuto();
-    MultiThreadAuto BLTA = new MultiThreadAuto();
-    MultiThreadAuto BRTA = new MultiThreadAuto();
+    MultiThreadControl AL = new MultiThreadControl();
+    MultiThreadControl AR = new MultiThreadControl();
 
     //initalizes all hardware, must be run before movement
     public void init(HardwareMap hardwareMap) {
-
+        //initialize hardware
         frontL = hardwareMap.get(DcMotor.class, "frontmotorL");
         backL = hardwareMap.get(DcMotor.class, "backmotorL");
         frontR = hardwareMap.get(DcMotor.class, "frontmotorR");
@@ -69,7 +66,7 @@ public class RobotHardware {
         mActuatorRight = hardwareMap.get(DcMotor.class, "actuatorR");
         servoL = hardwareMap.get(Servo.class, "servoL");
         servoR = hardwareMap.get(Servo.class, "servoR");
-
+        //sets motor power to zero before movement
         frontL.setPower(0);
         frontR.setPower(0);
         backL.setPower(0);
@@ -78,15 +75,18 @@ public class RobotHardware {
         mActuatorRight.setPower(0);
 
 
-
-        frontL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        frontR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        backL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        backR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-
-        servoL.setPosition(0);
+        //using brake mode on driving motors
+        frontL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //set servo motor positions
+        servoL.setPosition(0.3);
         servoR.setDirection(Servo.Direction.REVERSE);
-        servoR.setPosition(0);
+        servoR.setPosition(0.25);
+
+
+
 
     }
     //Math
@@ -99,22 +99,26 @@ public class RobotHardware {
     }
 
     public double angular(double degrees, int rotationTicks) {
-        final double w = 14;
-        final double l = 15.5;
+        final double w = 16;
+        final double l = 15;
 
         double diagonal = Math.sqrt(Math.pow(w, 2) + Math.pow(l, 2));
-        double circumfrence = diagonal * Math.PI;
-        double oneDegree = circumfrence / 360;
+        double circumference = diagonal * Math.PI;
+        double oneDegree = circumference / 360;
 
         return linear(oneDegree, rotationTicks) * degrees;
     }
-
     /*
     Start of Controller Movement Section
     */
 
     // x is x axis, y is y axis, and r is rotational value
     public void movement(double x, double y, double r) {
+        /*
+        Driver controlled movement
+        Program continuously updates direction based off of calculations on each motor
+        then sends them all to a multithreaded java script to run at the same time
+         */
         FRT.load(frontR, (-y) - x - r);
         FLT.load(frontL, y - x - r);
         BLT.load(backL, y + x - r);
@@ -141,18 +145,21 @@ public class RobotHardware {
         mActuatorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
-        mActuatorLeft.setPower(1);
-        mActuatorRight.setPower(1);
+        AR.load(mActuatorRight, 1);
+        AL.load(mActuatorLeft, 1);
+
+        AR.start();
+        AL.start();
     }
 
-    public void openClaw() {
-        servoL.setPosition(0);
-        servoR.setPosition(0);
+    public void openClaw(double L ,double R) {
+        servoL.setPosition(L);
+        servoR.setPosition(R);
     }
 
     public void closeClaw() {
-        servoL.setPosition(0.12);
-        servoR.setPosition(0.17);
+        servoL.setPosition(0.43);
+        servoR.setPosition(0.43);
     }
 
     /*
@@ -160,30 +167,30 @@ public class RobotHardware {
     Start of Autonomous Section
     */
 
-    public void movementAuto(double xInches, double yInches, double rDegrees, double power) {
+    public void movementAuto(double power, int fL, int fR, int bR, int bL) {
         frontR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        frontR.setTargetPosition((int) (linear(yInches, frontRRotation) -  linear(xInches, frontRRotation) + angular(rDegrees, frontRRotation)));
-        frontL.setTargetPosition((int) (- linear(yInches, frontLRotation) - linear(xInches, frontLRotation) + angular(rDegrees, frontLRotation)));
-        backL.setTargetPosition((int) (- linear(yInches, backLRotation) + linear(xInches, backLRotation) + angular(rDegrees, backLRotation)));
-        backR.setTargetPosition((int) (linear(yInches, backRRotation) + linear(xInches, backRRotation) + angular(rDegrees, backRRotation)));
+        frontR.setTargetPosition(fR);
+        frontL.setTargetPosition(fL);
+        backL.setTargetPosition(bL);
+        backR.setTargetPosition(bR);
 
         frontR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         frontL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        backL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        FRTA.load(frontR, power);
-        FLTA.load(frontL, power);
-        BLTA.load(backL, power);
-        BRTA.load(backR, power);
+        FRT.load(frontR, power);
+        FLT.load(frontL, power);
+        BLT.load(backL, power);
+        BRT.load(backR, power);
 
-        FRTA.start();
-        FLTA.start();
-        BRTA.start();
-        BLTA.start();
+        FRT.start();
+        FLT.start();
+        BLT.start();
+        BRT.start();
     }
 }

@@ -36,11 +36,25 @@ public class MotorTest extends LinearOpMode {
         telemetry.addData("Encoder", robot.frontR);
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-/*
 
- */
-        robot.rotateAuto(180,1);
+        robot.closeClaw();
+        sleep(200);
+        robot.linearActuator(700);
+        robot.movementAuto(0.3, 196, 196, -196,-196);
+        sleep(1000);
+        robot.movementAuto(0.3,-2948,2901,2929,-2966);
         sleep(5000);
+        robot.movementAuto(0.3,200,-200,-200,200);//was 200 on all
+        robot.linearActuator(robot.thirdJunction);
+        sleep(2000);
+        robot.movementAuto(0.3, 434,447,-462,-481);
+        sleep(2000);
+        robot.openClaw(0.165, 0.1);
+        sleep(5000);
+        robot.movementAuto(0.3, 200,-200,-200,200);
+        robot.linearActuator(400);
+        sleep(2000);
+
 
 
         // run until the end of the match (driver presses STOP)

@@ -35,7 +35,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import java.util.ArrayList;
 
 @Autonomous
-public class  Camera extends LinearOpMode
+public class Camera extends LinearOpMode
 {
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
@@ -173,27 +173,23 @@ public class  Camera extends LinearOpMode
         /* Actually do something useful */
         if (tagOfInterest == null || tagOfInterest.id == Left) {
             //left code
-            coneStack();
-            sleep(800);
-            robot.movementAuto(-12, 0, 0, 0.5);
-            sleep(800);
-            robot.linearActuator(0);
-            robot.movementAuto(0, 0, -90, 0.5);
+            //coneStack();
+            robot.movementAuto(0.3, -1375,1297,1375,-1423);
+            sleep(3000);
+            robot.movementAuto(0.3,955,989,-1062,-968);
+            sleep(3000);
         }else if (tagOfInterest.id == Right) {
             //right code
-            coneStack();
-            sleep(800);
-            robot.movementAuto(36, 0, 0, 0.5);
-            sleep(1800);
-            robot.linearActuator(0);
-            robot.movementAuto(0, 0, 180, 0.5);
+            //coneStack();
+            robot.movementAuto(0.3, -1375,1297,1375,-1423);
+            sleep(3000);
+            robot.movementAuto(0.3,-955,-989,1062,968);
+            sleep(3000);
         }else if (tagOfInterest.id == Middle) {
             //middle code
-            coneStack();
-            robot.movementAuto(12, 0, 0, 0.5);
-            sleep(800);
-            robot.linearActuator(0);
-            robot.movementAuto(0, 0, -90, 0.5);
+            //coneStack();
+            robot.movementAuto(0.3, -1375,1297,1375,-1423);
+            sleep(3000);
         }
 
         /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
@@ -212,42 +208,23 @@ public class  Camera extends LinearOpMode
         telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
     }
 
-    void coneStack() {
+    /*void coneStack() {
         robot.closeClaw();
-        sleep (200);
-
-        robot.movementAuto(0, 1, 0, 0.6);
-        sleep(800);
-
-        robot.movementAuto(3, 0, 0, 0.3);
-        sleep(800);
-
-        robot.movementAuto(0, 25, 0, 0.6);
-        sleep(1800);
-
-        robot.movementAuto(-13, 0, 0, 0.8);
-        robot.linearActuator(robot.firstJunction);
+        sleep(200);
+        robot.linearActuator(700);
+        robot.movementAuto(0.3, 196, 196, -196,-196);
         sleep(1000);
-
-        robot.movementAuto(0, 3, 0, 0.3);
-        sleep(800);
-
-        robot.openClaw();
-        sleep(1000);
-
-        robot.movementAuto(0, -3, 0, 0.3);
-        sleep(800);
-/*
-        robot.leftRightAuto(12, 0.8);
-        sleep(1000);
-
-        robot.frontBackAuto(20, 0.6);
-        sleep(1800);
-
-        robot.rotateAuto(90, 0.4);
-        robot.linearActuator(0);
-        sleep(1500);
-*/
-
-    }
+        robot.movementAuto(0.3,-2948,2901,2929,-2966);
+        sleep(5000);
+        robot.movementAuto(0.3,200,-200,-200,200);//was 200 on all
+        robot.linearActuator(robot.thirdJunction);
+        sleep(2000);
+        robot.movementAuto(0.3, 530,530,-567,-543);
+        sleep(2000);
+        robot.openClaw(0.165, 0.1);
+        sleep(500);
+        robot.movementAuto(0.3, 200,-200,-200,200);
+        robot.linearActuator(400);
+        sleep(2000);
+    }*/
 }
